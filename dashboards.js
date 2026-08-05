@@ -28,5 +28,13 @@ window.BP_DASHBOARDS = [
     embedUrl: "https://brospartners.github.io/liquidity-crawler/",
     sourceUrl: "https://brospartners.github.io/liquidity-crawler/",
     cadence: "Cập nhật hằng ngày lúc 17:00"
+  },
+  {
+    id: "phan-tich-nganh",
+    title: "Phân tích ngân hàng & CTCK",
+    blurb: "Định giá và hiệu quả kinh doanh của 14 ngân hàng và các công ty chứng khoán: P/B, P/E, ROE, chất lượng tài sản, tiến độ lợi nhuận so với kế hoạch, cổ tức và cơ cấu cổ đông.",
+    embedUrl: "https://bp-banking-dashboard-delta.vercel.app/",
+    sourceUrl: "https://bp-banking-dashboard-delta.vercel.app/",
+    cadence: "Cập nhật theo kỳ báo cáo tài chính, giá cổ phiếu lấy trực tiếp"
   }
 ];
