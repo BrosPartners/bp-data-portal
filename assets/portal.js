@@ -2,6 +2,7 @@
   "use strict";
 
   var LIST = window.BP_DASHBOARDS || [];
+  var EMBED_TIMEOUT_MS = 20000;
 
   function renderHome() {
     var grid = document.getElementById("bpGrid");
@@ -99,7 +100,43 @@
     frame.title = d.title;
     frame.setAttribute("allow", "fullscreen");
 
+    var overlay = document.createElement("div");
+    overlay.className = "bp-overlay";
+
+    var spinner = document.createElement("div");
+    spinner.className = "bp-spinner";
+
+    var msg = document.createElement("div");
+    msg.className = "bp-msg";
+    msg.textContent = "Đang tải " + d.title + "…";
+
+    overlay.appendChild(spinner);
+    overlay.appendChild(msg);
+
+    var settled = false;
+    var timer = window.setTimeout(function () {
+      if (settled) return;
+      spinner.remove();
+      msg.textContent =
+        "Bảng theo dõi mất nhiều thời gian hơn thường lệ để khởi động. " +
+        "Ứng dụng có thể đang được đánh thức sau thời gian không sử dụng — vui lòng chờ thêm hoặc mở ở tab mới.";
+      var btn = document.createElement("a");
+      btn.className = "bp-btn";
+      btn.href = d.sourceUrl;
+      btn.target = "_blank";
+      btn.rel = "noopener";
+      btn.textContent = "Mở ở tab mới";
+      overlay.appendChild(btn);
+    }, EMBED_TIMEOUT_MS);
+
+    frame.addEventListener("load", function () {
+      settled = true;
+      window.clearTimeout(timer);
+      overlay.hidden = true;
+    });
+
     wrap.appendChild(frame);
+    wrap.appendChild(overlay);
     root.appendChild(buildNav(d));
     root.appendChild(wrap);
   }
