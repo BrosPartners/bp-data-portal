@@ -184,10 +184,14 @@
     root.appendChild(wrap);
   }
 
-  var page = document.body.getAttribute("data-page");
-  if (page === "home") {
-    renderHome();
-  } else if (page === "embed") {
-    mountEmbed();
-  }
+  // portal.js không tự chạy — assets/auth.js (nạp SAU file này) gọi BP_RENDER()
+  // sau khi xác nhận đăng nhập hợp lệ (hoặc ngay lập tức nếu đã có session còn hạn).
+  window.BP_RENDER = function () {
+    var page = document.body.getAttribute("data-page");
+    if (page === "home") {
+      renderHome();
+    } else if (page === "embed") {
+      mountEmbed();
+    }
+  };
 })();

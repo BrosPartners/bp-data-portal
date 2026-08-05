@@ -157,6 +157,34 @@ body[data-page="embed"] {
 @keyframes bp-spin { to { transform: rotate(360deg); } }
 .bp-overlay .bp-msg { color: var(--bp-muted); max-width: 460px; }
 
+/* ---------- Cổng đăng nhập ---------- */
+.bp-auth-gate {
+  position: fixed; inset: 0; z-index: 1000;
+  background: var(--bp-bg);
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+}
+.bp-auth-card {
+  background: var(--bp-surface);
+  border: 1px solid var(--bp-border);
+  border-top: 3px solid var(--bp-teal);
+  border-radius: 4px;
+  padding: 36px 32px;
+  max-width: 380px; width: 100%;
+  text-align: center;
+}
+.bp-auth-logo { height: 44px; width: auto; margin-bottom: 16px; }
+.bp-auth-card h1 { font-size: 19px; margin: 0 0 8px; color: var(--bp-heading); }
+.bp-auth-sub { font-size: 14px; color: var(--bp-muted); margin: 0 0 20px; }
+.bp-auth-btn-host { display: flex; justify-content: center; min-height: 44px; }
+.bp-auth-msg { font-size: 13px; margin-top: 16px; min-height: 1em; }
+.bp-auth-msg-error { color: #C0392B; }
+.bp-signout {
+  margin-left: 12px; font-size: 13px; color: var(--bp-muted);
+}
+.bp-signout a { color: var(--bp-muted); }
+.bp-signout a:hover { color: var(--bp-teal-dark); }
+
 /* ---------- Responsive ---------- */
 @media (max-width: 980px) {
   .bp-grid { grid-template-columns: repeat(2, 1fr); }
