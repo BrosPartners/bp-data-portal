@@ -32,6 +32,19 @@
       card.appendChild(a);
       grid.appendChild(card);
     });
+
+    var footer = document.getElementById("bpFooterSources");
+    if (footer) {
+      LIST.forEach(function (d, i) {
+        if (i > 0) footer.appendChild(document.createTextNode(" · "));
+        var a = document.createElement("a");
+        a.href = d.sourceUrl;
+        a.target = "_blank";
+        a.rel = "noopener";
+        a.textContent = d.title;
+        footer.appendChild(a);
+      });
+    }
   }
 
   function findDashboard(id) {
@@ -56,11 +69,17 @@
 
     var tabs = document.createElement("div");
     tabs.className = "bp-tabs";
+    var activeTab = null;
     LIST.forEach(function (d) {
       var a = document.createElement("a");
-      a.className = "bp-tab" + (d.id === current.id ? " is-active" : "");
+      var isActive = d.id === current.id;
+      a.className = "bp-tab" + (isActive ? " is-active" : "");
       a.href = "./" + d.id + ".html";
       a.textContent = d.title;
+      if (isActive) {
+        a.setAttribute("aria-current", "page");
+        activeTab = a;
+      }
       tabs.appendChild(a);
     });
 
@@ -72,12 +91,25 @@
     src.href = current.sourceUrl;
     src.target = "_blank";
     src.rel = "noopener";
-    src.textContent = "↗ Mở app gốc";
+    src.setAttribute("aria-label", "Mở app gốc");
+    var srcGlyph = document.createTextNode("↗ ");
+    var srcLabel = document.createElement("span");
+    srcLabel.className = "bp-source-label";
+    srcLabel.textContent = "Mở app gốc";
+    src.appendChild(srcGlyph);
+    src.appendChild(srcLabel);
 
     nav.appendChild(logo);
     nav.appendChild(tabs);
     nav.appendChild(spacer);
     nav.appendChild(src);
+
+    if (activeTab) {
+      window.setTimeout(function () {
+        tabs.scrollLeft = activeTab.offsetLeft - 12;
+      }, 0);
+    }
+
     return nav;
   }
 
@@ -108,6 +140,8 @@
 
     var msg = document.createElement("div");
     msg.className = "bp-msg";
+    msg.setAttribute("role", "status");
+    msg.setAttribute("aria-live", "polite");
     msg.textContent = "Đang tải " + d.title + "…";
 
     overlay.appendChild(spinner);
@@ -138,6 +172,15 @@
     wrap.appendChild(frame);
     wrap.appendChild(overlay);
     root.appendChild(buildNav(d));
+
+    if (d.note) {
+      document.body.className += " bp-has-note";
+      var note = document.createElement("div");
+      note.className = "bp-note";
+      note.textContent = d.note;
+      root.appendChild(note);
+    }
+
     root.appendChild(wrap);
   }
 

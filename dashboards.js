@@ -9,7 +9,8 @@ window.BP_DASHBOARDS = [
        theo cai dat sang/toi cua may nguoi xem va choi voi nen trang cua portal. */
     embedUrl: "https://bp-tradingmonitor.streamlit.app/?embed=true&embed_options=light_theme",
     sourceUrl: "https://bp-tradingmonitor.streamlit.app",
-    cadence: "Cập nhật nhiều lần mỗi phiên, Thứ 2 – Thứ 6"
+    cadence: "Cập nhật nhiều lần mỗi phiên, Thứ 2 – Thứ 6",
+    note: "Bảng này chạy trên Streamlit và có thể ngủ khi lâu không ai truy cập — nếu thấy màn hình khởi động, bấm nút trong khung để đánh thức, mất khoảng 30 giây."
   },
   {
     id: "bat-dong-san",
@@ -22,7 +23,7 @@ window.BP_DASHBOARDS = [
   {
     id: "vi-mo",
     title: "Vĩ mô & Ngân hàng",
-    blurb: "Lãi suất huy động 18 ngân hàng, lãi suất liên ngân hàng và điều hành của SBV, tỷ giá, giá vàng, lợi suất trái phiếu và các chỉ tiêu vĩ mô.",
+    blurb: "Lãi suất huy động của các ngân hàng lớn, lãi suất liên ngân hàng và điều hành của SBV, tỷ giá, giá vàng, lợi suất trái phiếu và các chỉ tiêu vĩ mô.",
     embedUrl: "https://brospartners.github.io/liquidity-crawler/",
     sourceUrl: "https://brospartners.github.io/liquidity-crawler/",
     cadence: "Cập nhật hằng ngày lúc 17:00"
