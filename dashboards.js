@@ -5,7 +5,9 @@ window.BP_DASHBOARDS = [
     id: "chung-khoan",
     title: "Giao dịch nhà đầu tư nước ngoài",
     blurb: "Theo dõi mua/bán ròng của khối ngoại trên 17 mã cổ phiếu, chia theo phiên sáng, phiên chiều và ATC; kèm room ngoại còn lại và thanh khoản thị trường.",
-    embedUrl: "https://bp-tradingmonitor.streamlit.app/?embed=true",
+    /* embed_options=light_theme: ep Streamlit dung theme sang, neu khong app se doi mau
+       theo cai dat sang/toi cua may nguoi xem va choi voi nen trang cua portal. */
+    embedUrl: "https://bp-tradingmonitor.streamlit.app/?embed=true&embed_options=light_theme",
     sourceUrl: "https://bp-tradingmonitor.streamlit.app",
     cadence: "Cập nhật nhiều lần mỗi phiên, Thứ 2 – Thứ 6"
   },
