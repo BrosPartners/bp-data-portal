@@ -1,10 +1,9 @@
 (function () {
   "use strict";
 
-  // ĐANG LÀ GIÁ TRỊ GIẢ ĐỂ TEST — thay bằng Client ID thật lấy từ
-  // console.cloud.google.com (APIs & Services → Credentials) rồi mới coi là live.
-  // Client ID KHÔNG phải bí mật, an toàn để để thẳng trong code công khai.
-  var GOOGLE_CLIENT_ID = "REPLACE_WITH_REAL_CLIENT_ID.apps.googleusercontent.com";
+  // Client ID thật, project Google Cloud "BP Data Portal" (Internal, chỉ chấp nhận
+  // tài khoản trong Workspace brospartners.com). KHÔNG phải bí mật.
+  var GOOGLE_CLIENT_ID = "526273088846-j356ovgic31ggf7g0qckle234h5mu74s.apps.googleusercontent.com";
   var ALLOWED_DOMAIN = "brospartners.com";
   var SESSION_KEY = "bp_auth_v1";
 
@@ -39,8 +38,10 @@
 
   function isAllowedEmail(email, hd) {
     if (hd === ALLOWED_DOMAIN) return true;
-    return typeof email === "string" && email.toLowerCase().indexOf("@" + ALLOWED_DOMAIN) ===
-      email.length - (ALLOWED_DOMAIN.length + 1);
+    if (typeof email !== "string") return false;
+    var suffix = "@" + ALLOWED_DOMAIN;
+    var e = email.toLowerCase();
+    return e.length > suffix.length && e.slice(-suffix.length) === suffix;
   }
 
   function buildGate() {
