@@ -2,9 +2,15 @@
 
 Cổng dữ liệu thị trường của Bros Partners — vỏ chung nhúng 3 dashboard đang vận hành độc lập.
 
+URL production: https://brospartners.github.io/bp-data-portal/
+
 ## Chạy local
 
 Mở trực tiếp `index.html` bằng trình duyệt. Không cần server, không cần cài gì.
+
+Muốn kiểm chứng phần dựng bằng JavaScript thì phải chạy qua HTTP:
+
+    python -m http.server 8020 --directory .
 
 ## Thêm một dashboard mới
 
@@ -13,8 +19,13 @@ Mở trực tiếp `index.html` bằng trình duyệt. Không cần server, khô
 
 ## Deploy
 
-    $env:VERCEL_TOKEN = "<token tu vercel.com/account/tokens>"
-    npx vercel --prod --yes --scope bros-partners
+GitHub Pages, phục vụ thẳng nhánh `main` (thư mục gốc). Đẩy code lên là Pages tự build:
+
+    git push origin main
+
+Không có bước build, không có workflow riêng. Vì Pages phục vụ site ở đường dẫn con
+`/bp-data-portal/`, mọi link nội bộ phải là đường dẫn tương đối kèm đuôi `.html`
+(`./vi-mo.html`) — đừng đổi sang đường dẫn tuyệt đối hay bỏ đuôi.
 
 ## Ràng buộc
 
