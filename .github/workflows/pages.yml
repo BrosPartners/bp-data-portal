@@ -1,0 +1,43 @@
+# Deploy site tinh len GitHub Pages bang GitHub Actions.
+#
+# Vi sao khong dung Pages "legacy" (branch-based) nua: ngay 2026-08-06 buoc
+# deploy cua pages-build-deployment lien tuc bao "Timeout reached, aborting!"
+# (3 lan lien tiep, trong khi buoc build van xong trong ~25 giay va
+# githubstatus bao binh thuong). Duong deploy bang Actions khong di qua buoc
+# do nen tranh duoc loi.
+#
+# Site la HTML/CSS/JS tinh, khong can build — chi upload nguyen thu muc goc.
+name: Deploy Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Khong huy deploy dang chay giua chung; xep hang cho xong.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+      - id: deployment
+        uses: actions/deploy-pages@v4
