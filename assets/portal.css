@@ -238,19 +238,20 @@ body.bp-collapsed .bp-sidebar {
 .bp-brand {
   height: var(--topbar-h);
   flex: 0 0 var(--topbar-h);
-  display: flex; align-items: center; gap: 10px;
+  display: flex; align-items: center; justify-content: center;
   padding: 0 14px;
   border-bottom: 1px solid var(--border-hairline);
   color: var(--text-primary);
 }
 .bp-brand:hover { text-decoration: none; }
-.bp-brand img { height: 26px; width: auto; flex: 0 0 auto; }
-.bp-brand-name {
-  font-size: var(--text-body); font-weight: 700; letter-spacing: .02em;
-  white-space: nowrap; overflow: hidden;
+/* Logo đã gồm cả chữ "BROS PARTNERS" nên không cần nhãn chữ riêng.
+   Thu gọn thì hạ chiều cao để vừa cột 64px mà vẫn nhận ra hình. */
+.bp-brand img {
+  height: 34px; width: auto; flex: 0 0 auto;
+  transition: height var(--dur-base) var(--ease-standard);
 }
-body.bp-collapsed .bp-brand-name { display: none; }
-body.bp-collapsed .bp-brand { justify-content: center; padding: 0; }
+body.bp-collapsed .bp-brand { padding: 0 6px; }
+body.bp-collapsed .bp-brand img { height: 30px; }
 
 .bp-nav { flex: 1 1 auto; overflow-y: auto; padding: 12px 8px; }
 
@@ -439,7 +440,7 @@ body.bp-collapsed .bp-sidebar-foot { flex-direction: column; }
   box-shadow: var(--shadow-lg);
   padding: 38px 32px; max-width: 380px; width: 100%; text-align: center;
 }
-.bp-auth-logo { height: 42px; width: auto; margin-bottom: 18px; }
+.bp-auth-logo { height: 64px; width: auto; margin-bottom: 18px; }
 .bp-auth-card h1 { font-size: var(--text-heading-md); margin: 0 0 8px; color: var(--text-primary); }
 .bp-auth-sub { font-size: var(--text-body); color: var(--text-tertiary); margin: 0 0 22px; }
 .bp-auth-btn-host { display: flex; justify-content: center; min-height: 44px; }
@@ -458,8 +459,9 @@ body.bp-collapsed .bp-sidebar-foot { flex-direction: column; }
 /* Dưới 700px: sidebar co về dạng icon, không chiếm chỗ nội dung */
 @media (max-width: 700px) {
   :root { --sidebar-w: var(--sidebar-w-collapsed); --content-pad: 14px; }
-  .bp-brand-name, .bp-item-label { display: none; }
-  .bp-brand { justify-content: center; padding: 0; }
+  .bp-item-label { display: none; }
+  .bp-brand { padding: 0 6px; }
+  .bp-brand img { height: 30px; }
   .bp-item { justify-content: center; padding: 8px 0; }
   .bp-group-label {
     height: 1px; padding: 0; margin: 0 8px 8px;

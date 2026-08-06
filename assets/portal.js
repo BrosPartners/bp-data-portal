@@ -101,11 +101,11 @@
     var brand = el("a", "bp-brand");
     brand.href = "./index.html";
     brand.title = "Về trang chủ cổng dữ liệu";
+    // Logo đã chứa sẵn chữ "BROS PARTNERS" nên không thêm chữ riêng bên cạnh.
     var img = el("img");
     img.src = "./assets/logo.png";
-    img.alt = "";
+    img.alt = "Bros Partners";
     brand.appendChild(img);
-    brand.appendChild(el("span", "bp-brand-name", "BROS PARTNERS"));
     aside.appendChild(brand);
 
     var nav = el("nav", "bp-nav");
