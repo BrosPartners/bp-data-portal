@@ -7,10 +7,22 @@
 
 :root {
   /* ---------- Tầng 1: bảng màu thô ---------- */
-  --teal-400: #1AA8CB;
-  --teal-500: #008EB0;   /* màu thương hiệu Bros Partners */
-  --teal-600: #00728d;   /* dùng khi có chữ trắng đè lên: đạt WCAG AA 5.54:1 */
-  --teal-700: #005d73;
+  /* Lấy từ logo Bros Partners: vành đai navy, hành tinh vàng hổ phách,
+     ba vệt cam-đỏ. Navy làm màu chính, vàng làm màu nhấn. */
+  --navy-400: #2C5A96;
+  --navy-500: #1C3F6E;   /* vành đai logo */
+  --navy-600: #17365D;   /* chữ trắng đè lên đạt ~10.5:1 */
+  --navy-700: #102741;
+  --navy-300: #6BA3E0;   /* bản sáng, dùng cho nền tối */
+  --navy-200: #8FBCEA;
+
+  --gold-300: #F7CE6B;
+  --gold-400: #F2B738;
+  --gold-500: #E9A21C;   /* hành tinh */
+  --gold-600: #B4790C;   /* đủ tối để làm chữ trên nền sáng */
+
+  --ember-500: #F26A21;  /* vệt cam */
+  --ember-600: #E0342A;
 
   /* Xám ẤM (ngả nâu) thay vì xám lạnh — nhìn bớt khô cứng trên màn hình lớn */
   --warm-0:  #ffffff;
@@ -39,16 +51,23 @@
   --border-subtle:   #0000001a;   /* 10% — mặc định */
   --border-strong:   #00000029;   /* 16% — nhấn mạnh */
 
-  --accent:        var(--teal-500);
-  --accent-text:   var(--teal-600);  /* accent dùng làm CHỮ trên nền sáng */
+  --accent:        var(--navy-500);
+  --accent-text:   var(--navy-600);  /* accent dùng làm CHỮ trên nền sáng */
   /* Cặp nền/chữ cho nút: phải đi cùng nhau, vì ở nền tối accent sáng lên thì
-     chữ trắng sẽ chỉ còn 2.34:1. Nền tối phải lật sang chữ đen (8.97:1). */
-  --accent-btn-bg: var(--teal-600);
+     chữ trắng sẽ tụt tương phản. Nền tối phải lật sang chữ đen. */
+  --accent-btn-bg: var(--navy-600);
   --accent-btn-fg: #ffffff;
-  --accent-hover:  var(--teal-700);
-  --accent-soft:   #008EB014;        /*  8% — nền badge */
-  --accent-fill:   #008EB026;        /* 15% — vùng tô dưới đường biểu đồ */
-  --accent-ring:   #008EB038;        /* vòng focus */
+  --accent-hover:  var(--navy-700);
+  --accent-soft:   #1C3F6E14;        /*  8% — nền badge */
+  --accent-fill:   #1C3F6E26;        /* 15% — vùng tô dưới đường biểu đồ */
+  --accent-ring:   #1C3F6E38;        /* vòng focus */
+
+  /* Vàng thương hiệu — dùng để nhấn, KHÔNG dùng làm nền cho chữ trắng
+     (vàng quá sáng, chữ trắng chỉ đạt ~2:1). Làm chữ thì dùng --brand-gold-text. */
+  --brand-gold:      var(--gold-500);
+  --brand-gold-text: var(--gold-600);
+  --brand-gold-soft: #E9A21C1f;
+  --brand-ember:     var(--ember-500);
 
   /* ---------- Tầng 3: ngữ nghĩa NGHIỆP VỤ tài chính ---------- */
   /* Không phải xanh–đỏ chói: lục thẫm và đỏ gạch, đọc lâu đỡ mỏi mắt */
@@ -67,8 +86,8 @@
 
   /* Màu series biểu đồ — TÁCH RIÊNG khỏi màu giao diện, để chart không
      bị lẫn màu với nút bấm/trạng thái */
-  --data-1: #008EB0; --data-2: #6366f1; --data-3: #f59e0b; --data-4: #8b5cf6;
-  --data-5: #059669; --data-6: #db2777; --data-7: #f97316;
+  --data-1: #1C3F6E; --data-2: #E9A21C; --data-3: #2C5A96; --data-4: #F26A21;
+  --data-5: #059669; --data-6: #6366f1; --data-7: #db2777;
 
   /* ---------- Bố cục ---------- */
   --sidebar-w:           240px;
@@ -126,14 +145,19 @@
   --border-strong:   #ffffff33;
 
   /* Accent phải SÁNG hơn trên nền tối mới đủ tương phản */
-  --accent:        #22b8dd;
-  --accent-text:   #22b8dd;
-  --accent-btn-bg: #22b8dd;
-  --accent-btn-fg: #0d0d0d;   /* chữ ĐEN trên accent sáng: 8.97:1 */
-  --accent-hover:  #4fc9e8;
-  --accent-soft:   #22b8dd1a;
-  --accent-fill:   #22b8dd2e;
-  --accent-ring:   #22b8dd45;
+  /* Navy gốc quá tối trên nền đen → dùng bản sáng của chính nó */
+  --accent:        var(--navy-300);
+  --accent-text:   var(--navy-300);
+  --accent-btn-bg: var(--navy-300);
+  --accent-btn-fg: #0d0d0d;   /* chữ ĐEN trên accent sáng */
+  --accent-hover:  var(--navy-200);
+  --accent-soft:   #6BA3E01f;
+  --accent-fill:   #6BA3E033;
+  --accent-ring:   #6BA3E04d;
+
+  --brand-gold:      var(--gold-400);
+  --brand-gold-text: var(--gold-300);
+  --brand-gold-soft: #F2B73824;
 
   --trend-up:        #22c55e;
   --trend-up-soft:   #22c55e1a;
@@ -155,9 +179,10 @@
     --text-primary:#ededed; --text-secondary:#b4b4b4; --text-tertiary:#7d7d7d;
     --text-quaternary:#5a5a5a; --text-inverse:#0d0d0d;
     --border-hairline:#ffffff12; --border-subtle:#ffffff1f; --border-strong:#ffffff33;
-    --accent:#22b8dd; --accent-text:#22b8dd; --accent-hover:#4fc9e8;
-    --accent-btn-bg:#22b8dd; --accent-btn-fg:#0d0d0d;
-    --accent-soft:#22b8dd1a; --accent-fill:#22b8dd2e; --accent-ring:#22b8dd45;
+    --accent:#6BA3E0; --accent-text:#6BA3E0; --accent-hover:#8FBCEA;
+    --accent-btn-bg:#6BA3E0; --accent-btn-fg:#0d0d0d;
+    --accent-soft:#6BA3E01f; --accent-fill:#6BA3E033; --accent-ring:#6BA3E04d;
+    --brand-gold:#F2B738; --brand-gold-text:#F7CE6B; --brand-gold-soft:#F2B73824;
     --trend-up:#22c55e; --trend-up-soft:#22c55e1a; --trend-down:#f87171;
     --trend-down-soft:#f871711a; --trend-flat:#8a8a8a;
     --shadow-sm:0 1px 2px #00000040,0 0 0 1px #ffffff0d;
@@ -260,6 +285,8 @@ body.bp-collapsed .bp-group-label {
   background: var(--accent-soft);
   color: var(--accent-text);
   font-weight: 600;
+  /* Vạch vàng bên trái — nhắc lại hành tinh vàng trong logo */
+  box-shadow: inset 2px 0 0 var(--brand-gold);
 }
 .bp-item.is-active svg { color: var(--accent-text); }
 body.bp-collapsed .bp-item { justify-content: center; padding: 8px 0; }
@@ -342,7 +369,7 @@ body.bp-collapsed .bp-sidebar-foot { flex-direction: column; }
 .bp-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
 .bp-card-icon {
   width: 34px; height: 34px; border-radius: var(--r-md);
-  background: var(--accent-soft); color: var(--accent-text);
+  background: var(--brand-gold-soft); color: var(--brand-gold-text);
   display: flex; align-items: center; justify-content: center;
   margin-bottom: 12px;
 }
