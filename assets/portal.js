@@ -96,7 +96,7 @@
   /* ---------- Sidebar ---------- */
   function buildSidebar(currentId) {
     var aside = el("aside", "bp-sidebar");
-    aside.setAttribute("aria-label", "Danh sách bảng theo dõi");
+    aside.setAttribute("aria-label", "Danh sách dashboard");
 
     var brand = el("a", "bp-brand");
     brand.href = "./index.html";
@@ -199,7 +199,7 @@
   var HOME_SKIN_KEY = "bp_home_skin";
 
   function homeSkin() {
-    try { return window.localStorage.getItem(HOME_SKIN_KEY) || "classic"; } catch (e) { return "classic"; }
+    try { return window.localStorage.getItem(HOME_SKIN_KEY) || "legal"; } catch (e) { return "legal"; }
   }
   function setHomeSkin(v) {
     try { window.localStorage.setItem(HOME_SKIN_KEY, v); } catch (e) {}
@@ -243,7 +243,7 @@
 
     hero.appendChild(el("h1", null, "Cổng dữ liệu thị trường"));
     hero.appendChild(el("p", null,
-      "Tổng hợp các bảng theo dõi thị trường của Bros Partners: giao dịch khối ngoại, " +
+      "Tổng hợp các dashboard thị trường của Bros Partners: giao dịch khối ngoại, " +
       "vĩ mô — ngân hàng, và bất động sản."));
 
     var grid = el("div", "bp-grid");
@@ -260,7 +260,7 @@
 
       var a = el("a", "bp-btn");
       a.href = "./" + d.id + ".html";
-      a.textContent = "Mở bảng theo dõi";
+      a.textContent = "Mở dashboard";
       a.style.marginTop = "14px";
       a.style.alignSelf = "flex-start";
       card.appendChild(a);
@@ -335,13 +335,13 @@
     hero.appendChild(el("div", "bp-legal-hero-deco", heroStripesSvg()));
     var heroInner = el("div", "bp-legal-hero-inner");
     heroInner.appendChild(el("span", "bp-legal-kicker", "CỔNG DỮ LIỆU NỘI BỘ"));
-    heroInner.appendChild(el("h1", null, "Dữ liệu thị trường bạn có thể tin tưởng"));
+    heroInner.appendChild(el("h1", null, "Bros Partners Database"));
     heroInner.appendChild(el("p", "bp-legal-lede",
-      "Tổng hợp các bảng theo dõi thị trường của Bros Partners: giao dịch khối ngoại, " +
+      "Tổng hợp các dashboard thị trường của Bros Partners: giao dịch khối ngoại, " +
       "vĩ mô — ngân hàng, và bất động sản — ở một nơi duy nhất."));
 
     var ctaRow = el("div", "bp-legal-cta-row");
-    var ctaPrimary = el("a", "bp-legal-btn bp-legal-btn-primary", "Xem các bảng theo dõi");
+    var ctaPrimary = el("a", "bp-legal-btn bp-legal-btn-primary", "Truy cập các Dashboard");
     ctaPrimary.href = "#bpLegalGrid";
     var ctaSecondary = el("a", "bp-legal-btn bp-legal-btn-ghost", "Về Bros Partners");
     ctaSecondary.href = "http://brospartners.com/?lang=vi";
@@ -349,20 +349,6 @@
     ctaRow.appendChild(ctaSecondary);
     heroInner.appendChild(ctaRow);
 
-    var groupCount = 0, seenGroups = {};
-    VISIBLE.forEach(function (d) {
-      var g = d.group || "Khác";
-      if (!seenGroups[g]) { seenGroups[g] = true; groupCount++; }
-    });
-    var stats = el("div", "bp-legal-stats");
-    [[String(VISIBLE.length), "bảng theo dõi"], [String(groupCount), "nhóm dữ liệu"], ["Nội bộ", "dành riêng Bros Partners"]]
-      .forEach(function (s) {
-        var item = el("div", "bp-legal-stat");
-        item.appendChild(el("div", "bp-legal-stat-num", s[0]));
-        item.appendChild(el("div", "bp-legal-stat-label", s[1]));
-        stats.appendChild(item);
-      });
-    heroInner.appendChild(stats);
     hero.appendChild(heroInner);
     page.appendChild(hero);
 
@@ -370,9 +356,9 @@
     var section = el("section", "bp-legal-section");
     section.id = "bpLegalGrid";
     var head = el("div", "bp-legal-section-head");
-    head.appendChild(el("span", "bp-legal-kicker", "CÁC BẢNG THEO DÕI"));
+    head.appendChild(el("span", "bp-legal-kicker", "CÁC DASHBOARD"));
     head.appendChild(el("h2", null, "Dữ liệu &amp; Phân tích"));
-    head.appendChild(el("p", "bp-legal-lede", "Bấm vào một bảng để mở toàn màn hình."));
+    head.appendChild(el("p", "bp-legal-lede", "Bấm vào một dashboard để mở toàn màn hình."));
     section.appendChild(head);
 
     var grid = el("div", "bp-legal-grid");
@@ -381,7 +367,7 @@
       card.appendChild(el("div", "bp-legal-card-icon", svg(d.icon)));
       card.appendChild(el("h3", null, d.title));
       card.appendChild(el("p", null, d.blurb));
-      var a = el("a", "bp-legal-more", "Mở bảng theo dõi →");
+      var a = el("a", "bp-legal-more", "Mở dashboard →");
       a.href = "./" + d.id + ".html";
       card.appendChild(a);
       grid.appendChild(card);
