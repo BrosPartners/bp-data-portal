@@ -45,12 +45,9 @@ window.BP_DASHBOARDS = [
     cadence: "Trực tiếp theo dữ liệu khảo sát"
   },
   {
-    /* hidden: TẠM ẨN khỏi sidebar, trang chủ và footer (2026-08-06).
-       Lý do: nội dung là research nội bộ (giá mục tiêu 14 ngân hàng), trong khi cổng đăng
-       nhập của portal chỉ chạy phía trình duyệt — ai xem mã nguồn vẫn mở thẳng được app gốc.
-       Trang phan-tich-nganh.html VẪN hoạt động nếu vào bằng URL trực tiếp, để nội bộ dùng.
-       Bỏ dòng `hidden` này để đưa tab trở lại, sau khi app gốc đã được khoá thật. */
-    hidden: true,
+    /* Đã hiện lại (2026-08-06) sau khi app gốc được khoá THẬT: bp-banking-dashboard
+       kiểm tra đăng nhập ở phía máy chủ (proxy.ts + cookie ký HMAC), chỉ email
+       @brospartners.com vào được — kể cả khi biết URL trực tiếp. */
     id: "phan-tich-nganh",
     group: "Nghiên cứu",
     icon: "research",
@@ -58,6 +55,7 @@ window.BP_DASHBOARDS = [
     blurb: "Định giá và hiệu quả kinh doanh của 14 ngân hàng và các công ty chứng khoán: P/B, P/E, ROE, chất lượng tài sản, tiến độ lợi nhuận so với kế hoạch, cổ tức và cơ cấu cổ đông.",
     embedUrl: "https://bp-banking-dashboard-delta.vercel.app/",
     sourceUrl: "https://bp-banking-dashboard-delta.vercel.app/",
-    cadence: "Theo kỳ báo cáo tài chính"
+    cadence: "Theo kỳ báo cáo tài chính",
+    note: "Bảng này yêu cầu đăng nhập riêng bằng email công ty. Nếu đăng nhập trong khung dưới đây không được (trình duyệt chặn cookie của trang nhúng — hay gặp trên Safari), bấm \"↗ Mở app gốc\" để đăng nhập ở tab riêng rồi quay lại."
   }
 ];
