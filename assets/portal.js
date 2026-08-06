@@ -195,17 +195,56 @@
     return { content: content, main: main };
   }
 
-  /* ---------- Trang chủ ---------- */
+  /* ---------- Trang chủ: 2 giao diện chuyển đổi được (như dark/light mode) ---------- */
+  var HOME_SKIN_KEY = "bp_home_skin";
+
+  function homeSkin() {
+    try { return window.localStorage.getItem(HOME_SKIN_KEY) || "classic"; } catch (e) { return "classic"; }
+  }
+  function setHomeSkin(v) {
+    try { window.localStorage.setItem(HOME_SKIN_KEY, v); } catch (e) {}
+  }
+
+  function buildSkinSwitch(current) {
+    var wrap = el("div", "bp-skin-switch");
+    wrap.setAttribute("role", "group");
+    wrap.setAttribute("aria-label", "Chọn giao diện trang chủ");
+    [["classic", "Giao diện gốc"], ["legal", "Giao diện mới"]].forEach(function (opt) {
+      var b = el("button", "bp-skin-opt" + (opt[0] === current ? " is-active" : ""), opt[1]);
+      b.type = "button";
+      if (opt[0] === current) b.setAttribute("aria-pressed", "true");
+      b.addEventListener("click", function () {
+        if (opt[0] === current) return;
+        setHomeSkin(opt[0]);
+        renderHome();
+        if (window.BP_REATTACH_USER_UI) window.BP_REATTACH_USER_UI();
+      });
+      wrap.appendChild(b);
+    });
+    return wrap;
+  }
+
   function renderHome() {
+    var root = document.getElementById("bpApp");
+    if (root) root.innerHTML = "";
+    if (homeSkin() === "legal") renderHomeLegal();
+    else renderHomeClassic();
+  }
+
+  function renderHomeClassic() {
     var parts = buildShell(null, "Cổng dữ liệu thị trường", null);
     var page = el("div", "bp-home");
 
+    var heroRow = el("div", "bp-hero-row");
     var hero = el("div", "bp-hero");
+    heroRow.appendChild(hero);
+    heroRow.appendChild(buildSkinSwitch("classic"));
+    page.appendChild(heroRow);
+
     hero.appendChild(el("h1", null, "Cổng dữ liệu thị trường"));
     hero.appendChild(el("p", null,
       "Tổng hợp các bảng theo dõi thị trường của Bros Partners: giao dịch khối ngoại, " +
       "vĩ mô — ngân hàng, và bất động sản."));
-    page.appendChild(hero);
 
     var grid = el("div", "bp-grid");
     VISIBLE.forEach(function (d) {
@@ -253,6 +292,123 @@
     page.appendChild(foot);
 
     parts.content.appendChild(page);
+  }
+
+  /* Hoạ tiết 3 vệt chéo lấy từ logo — dùng trang trí hero, không phải ảnh stock. */
+  function heroStripesSvg() {
+    return (
+      '<svg viewBox="0 0 300 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true">' +
+      '<defs><linearGradient id="bpStripe" x1="0" y1="0" x2="1" y2="0">' +
+      '<stop offset="0" stop-color="#F2B738" stop-opacity="0"/>' +
+      '<stop offset="1" stop-color="#F2B738" stop-opacity=".55"/></linearGradient></defs>' +
+      '<g stroke="url(#bpStripe)" stroke-width="10" stroke-linecap="round">' +
+      '<line x1="80" y1="60" x2="230" y2="60"/>' +
+      '<line x1="110" y1="95" x2="260" y2="95"/>' +
+      '<line x1="140" y1="130" x2="290" y2="130"/>' +
+      "</g></svg>"
+    );
+  }
+
+  function renderHomeLegal() {
+    var root = document.getElementById("bpApp");
+    var page = el("div", "bp-legal");
+
+    /* Thanh điều hướng trên cùng — không có sidebar, khác hẳn giao diện gốc */
+    var nav = el("header", "bp-legal-nav");
+    var brand = el("div", "bp-legal-brand");
+    var img = el("img"); img.src = "./assets/logo.png"; img.alt = "Bros Partners";
+    brand.appendChild(img);
+    brand.appendChild(el("span", "bp-legal-wordmark", "BROS PARTNERS"));
+    nav.appendChild(brand);
+
+    var navRight = el("div", "bp-legal-nav-right");
+    navRight.appendChild(buildSkinSwitch("legal"));
+    var siteLink = el("a", "bp-legal-navlink", "Website công ty");
+    siteLink.href = "http://brospartners.com/?lang=vi";
+    navRight.appendChild(siteLink);
+    navRight.appendChild(el("span", "bp-user-slot"));
+    nav.appendChild(navRight);
+    page.appendChild(nav);
+
+    /* Hero full-bleed */
+    var hero = el("section", "bp-legal-hero");
+    hero.appendChild(el("div", "bp-legal-hero-deco", heroStripesSvg()));
+    var heroInner = el("div", "bp-legal-hero-inner");
+    heroInner.appendChild(el("span", "bp-legal-kicker", "CỔNG DỮ LIỆU NỘI BỘ"));
+    heroInner.appendChild(el("h1", null, "Dữ liệu thị trường bạn có thể tin tưởng"));
+    heroInner.appendChild(el("p", "bp-legal-lede",
+      "Tổng hợp các bảng theo dõi thị trường của Bros Partners: giao dịch khối ngoại, " +
+      "vĩ mô — ngân hàng, và bất động sản — ở một nơi duy nhất."));
+
+    var ctaRow = el("div", "bp-legal-cta-row");
+    var ctaPrimary = el("a", "bp-legal-btn bp-legal-btn-primary", "Xem các bảng theo dõi");
+    ctaPrimary.href = "#bpLegalGrid";
+    var ctaSecondary = el("a", "bp-legal-btn bp-legal-btn-ghost", "Về Bros Partners");
+    ctaSecondary.href = "http://brospartners.com/?lang=vi";
+    ctaRow.appendChild(ctaPrimary);
+    ctaRow.appendChild(ctaSecondary);
+    heroInner.appendChild(ctaRow);
+
+    var groupCount = 0, seenGroups = {};
+    VISIBLE.forEach(function (d) {
+      var g = d.group || "Khác";
+      if (!seenGroups[g]) { seenGroups[g] = true; groupCount++; }
+    });
+    var stats = el("div", "bp-legal-stats");
+    [[String(VISIBLE.length), "bảng theo dõi"], [String(groupCount), "nhóm dữ liệu"], ["Nội bộ", "dành riêng Bros Partners"]]
+      .forEach(function (s) {
+        var item = el("div", "bp-legal-stat");
+        item.appendChild(el("div", "bp-legal-stat-num", s[0]));
+        item.appendChild(el("div", "bp-legal-stat-label", s[1]));
+        stats.appendChild(item);
+      });
+    heroInner.appendChild(stats);
+    hero.appendChild(heroInner);
+    page.appendChild(hero);
+
+    /* Lưới thẻ dạng dịch vụ */
+    var section = el("section", "bp-legal-section");
+    section.id = "bpLegalGrid";
+    var head = el("div", "bp-legal-section-head");
+    head.appendChild(el("span", "bp-legal-kicker", "CÁC BẢNG THEO DÕI"));
+    head.appendChild(el("h2", null, "Dữ liệu &amp; Phân tích"));
+    head.appendChild(el("p", "bp-legal-lede", "Bấm vào một bảng để mở toàn màn hình."));
+    section.appendChild(head);
+
+    var grid = el("div", "bp-legal-grid");
+    VISIBLE.forEach(function (d) {
+      var card = el("article", "bp-legal-card");
+      card.appendChild(el("div", "bp-legal-card-icon", svg(d.icon)));
+      card.appendChild(el("h3", null, d.title));
+      card.appendChild(el("p", null, d.blurb));
+      var a = el("a", "bp-legal-more", "Mở bảng theo dõi →");
+      a.href = "./" + d.id + ".html";
+      card.appendChild(a);
+      grid.appendChild(card);
+    });
+    section.appendChild(grid);
+    page.appendChild(section);
+
+    /* Footer — cùng nội dung với giao diện gốc, chỉ đổi kiểu chữ/màu */
+    var foot = el("footer", "bp-legal-footer");
+    foot.appendChild(el("p", null,
+      "Dữ liệu do Bros Partners tổng hợp từ nguồn công khai và khảo sát nội bộ."));
+    foot.appendChild(el("p", null,
+      "Các mức giá mục tiêu và dự phóng là quan điểm phân tích của Bros Partners tại thời điểm " +
+      "công bố, có thể thay đổi mà không cần báo trước. Nội dung mang tính tham khảo, không phải " +
+      "lời chào mua hay chào bán chứng khoán."));
+    var srcLine = el("p");
+    srcLine.appendChild(document.createTextNode("Nguồn: "));
+    VISIBLE.forEach(function (d, i) {
+      if (i > 0) srcLine.appendChild(document.createTextNode(" · "));
+      var a = el("a");
+      a.href = d.sourceUrl; a.target = "_blank"; a.rel = "noopener"; a.textContent = d.title;
+      srcLine.appendChild(a);
+    });
+    foot.appendChild(srcLine);
+    page.appendChild(foot);
+
+    root.appendChild(page);
   }
 
   /* ---------- Trang nhúng ---------- */

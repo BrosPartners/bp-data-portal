@@ -109,7 +109,11 @@
   }
 
   function addSignOut(email) {
-    if (document.getElementById("bp-signout")) return;
+    // Cho phép trang chủ gọi lại khi chuyển đổi giao diện (skin) — trang bị dựng lại
+    // toàn bộ nên ".bp-user-slot" là một phần tử DOM mới, phải gắn lại nút.
+    window.BP_REATTACH_USER_UI = function () { addSignOut(email); };
+    var old = document.getElementById("bp-signout");
+    if (old) old.remove();
     // Chỗ dành sẵn trên thanh trên, do portal.js dựng (buildTopbar).
     var target = document.querySelector(".bp-user-slot");
     if (!target) return;
