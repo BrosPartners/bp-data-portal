@@ -30,6 +30,12 @@ window.BP_DASHBOARDS = [
     cadence: "Cập nhật hằng ngày lúc 17:00"
   },
   {
+    /* hidden: TẠM ẨN khỏi trang chủ, thanh tab và footer (2026-08-06).
+       Lý do: nội dung là research nội bộ (giá mục tiêu 14 ngân hàng), trong khi cổng đăng
+       nhập của portal chỉ chạy phía trình duyệt — ai xem mã nguồn vẫn mở thẳng được app gốc.
+       Trang phan-tich-nganh.html VẪN hoạt động nếu vào bằng URL trực tiếp, để nội bộ dùng.
+       Bỏ dòng `hidden` này để đưa tab trở lại, sau khi app gốc đã được khoá thật. */
+    hidden: true,
     id: "phan-tich-nganh",
     title: "Phân tích ngân hàng & CTCK",
     blurb: "Định giá và hiệu quả kinh doanh của 14 ngân hàng và các công ty chứng khoán: P/B, P/E, ROE, chất lượng tài sản, tiến độ lợi nhuận so với kế hoạch, cổ tức và cơ cấu cổ đông.",

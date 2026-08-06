@@ -4,10 +4,14 @@
   var LIST = window.BP_DASHBOARDS || [];
   var EMBED_TIMEOUT_MS = 20000;
 
+  // Dashboard đánh dấu `hidden` không xuất hiện ở trang chủ / thanh tab / footer,
+  // nhưng trang nhúng của nó vẫn mở được bằng URL trực tiếp (findDashboard dùng LIST đầy đủ).
+  var VISIBLE = LIST.filter(function (d) { return !d.hidden; });
+
   function renderHome() {
     var grid = document.getElementById("bpGrid");
     if (!grid) return;
-    LIST.forEach(function (d) {
+    VISIBLE.forEach(function (d) {
       var card = document.createElement("article");
       card.className = "bp-card";
 
@@ -35,7 +39,7 @@
 
     var footer = document.getElementById("bpFooterSources");
     if (footer) {
-      LIST.forEach(function (d, i) {
+      VISIBLE.forEach(function (d, i) {
         if (i > 0) footer.appendChild(document.createTextNode(" · "));
         var a = document.createElement("a");
         a.href = d.sourceUrl;
@@ -70,7 +74,7 @@
     var tabs = document.createElement("div");
     tabs.className = "bp-tabs";
     var activeTab = null;
-    LIST.forEach(function (d) {
+    VISIBLE.forEach(function (d) {
       var a = document.createElement("a");
       var isActive = d.id === current.id;
       a.className = "bp-tab" + (isActive ? " is-active" : "");
