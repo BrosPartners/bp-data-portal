@@ -434,11 +434,16 @@
     frame.setAttribute("allow", "fullscreen");
 
     var overlay = el("div", "bp-overlay");
+    var overlayLogo = document.createElement("img");
+    overlayLogo.className = "bp-overlay-logo";
+    overlayLogo.src = "./assets/logo.png";
+    overlayLogo.alt = "";
     var spinner = el("div", "bp-spinner");
     var msg = el("div", "bp-msg");
     msg.setAttribute("role", "status");
     msg.setAttribute("aria-live", "polite");
     msg.textContent = "Đang tải " + d.title + "…";
+    overlay.appendChild(overlayLogo);
     overlay.appendChild(spinner);
     overlay.appendChild(msg);
 
@@ -468,11 +473,21 @@
     parts.content.appendChild(wrap);
   }
 
+  // Gỡ màn hình chờ (logo + spinner) hiện sẵn trong HTML tĩnh — gọi sau khi
+  // nội dung thật (trang chủ hoặc trang nhúng) đã dựng xong trong #bpApp.
+  function hideBootSplash() {
+    var el = document.getElementById("bpBootSplash");
+    if (!el) return;
+    el.classList.add("bp-boot-gone");
+    window.setTimeout(function () { el.remove(); }, 300);
+  }
+
   // portal.js không tự chạy — assets/auth.js (nạp SAU file này) gọi BP_RENDER()
   // sau khi xác nhận đăng nhập hợp lệ (hoặc ngay nếu đã có session còn hạn).
   window.BP_RENDER = function () {
     var page = document.body.getAttribute("data-page");
     if (page === "home") renderHome();
     else if (page === "embed") mountEmbed();
+    hideBootSplash();
   };
 })();

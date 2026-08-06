@@ -52,6 +52,11 @@
   }
 
   function buildGate() {
+    // Cổng đăng nhập hiện ra thay cho nội dung thật — màn chờ (logo + spinner)
+    // phải biến mất ngay lúc này, không đợi tới lúc render nội dung thành công.
+    var splash = document.getElementById("bpBootSplash");
+    if (splash) splash.remove();
+
     var overlay = document.createElement("div");
     overlay.id = "bp-auth-gate";
     overlay.className = "bp-auth-gate";
