@@ -103,7 +103,8 @@
 
   function addSignOut(email) {
     if (document.getElementById("bp-signout")) return;
-    var target = document.querySelector(".bp-home-header-inner") || document.querySelector(".bp-nav");
+    // Chỗ dành sẵn trên thanh trên, do portal.js dựng (buildTopbar).
+    var target = document.querySelector(".bp-user-slot");
     if (!target) return;
     var wrap = document.createElement("span");
     wrap.id = "bp-signout";
