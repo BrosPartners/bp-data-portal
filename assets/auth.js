@@ -1,6 +1,13 @@
 (function () {
   "use strict";
 
+  // ┌───────────────────────────────────────────────────────────────────────┐
+  // │ TẮT TẠM THỜI CỔNG ĐĂNG NHẬP — đặt theo yêu cầu ngày 2026-08-06.       │
+  // │ Đang là false: ai có link đều vào thẳng portal, không cần đăng nhập.   │
+  // │ BẬT LẠI: đổi thành true. Toàn bộ phần bên dưới vẫn nguyên.             │
+  // └───────────────────────────────────────────────────────────────────────┘
+  var AUTH_ENABLED = false;
+
   // Client ID thật, project Google Cloud "BP Data Portal" (Internal, chỉ chấp nhận
   // tài khoản trong Workspace brospartners.com). KHÔNG phải bí mật.
   var GOOGLE_CLIENT_ID = "526273088846-j356ovgic31ggf7g0qckle234h5mu74s.apps.googleusercontent.com";
@@ -193,6 +200,11 @@
   }
 
   function init() {
+    if (!AUTH_ENABLED) {
+      window.BP_RENDER();
+      return;
+    }
+
     var cached = readSession();
     if (cached) {
       window.BP_RENDER();

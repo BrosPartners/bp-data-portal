@@ -55,7 +55,6 @@ window.BP_DASHBOARDS = [
     blurb: "Định giá và hiệu quả kinh doanh của 14 ngân hàng và các công ty chứng khoán: P/B, P/E, ROE, chất lượng tài sản, tiến độ lợi nhuận so với kế hoạch, cổ tức và cơ cấu cổ đông.",
     embedUrl: "https://bp-banking-dashboard-delta.vercel.app/",
     sourceUrl: "https://bp-banking-dashboard-delta.vercel.app/",
-    cadence: "Theo kỳ báo cáo tài chính",
-    note: "Bảng này yêu cầu đăng nhập riêng bằng email công ty. Nếu đăng nhập trong khung dưới đây không được (trình duyệt chặn cookie của trang nhúng — hay gặp trên Safari), bấm \"↗ Mở app gốc\" để đăng nhập ở tab riêng rồi quay lại."
+    cadence: "Theo kỳ báo cáo tài chính"
   }
 ];
