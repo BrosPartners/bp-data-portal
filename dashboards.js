@@ -16,10 +16,10 @@ window.BP_DASHBOARDS = [
     icon: "trending",
     title: "Giao dịch nhà đầu tư nước ngoài",
     blurb: "Theo dõi mua/bán ròng của khối ngoại trên 17 mã cổ phiếu, chia theo phiên sáng, phiên chiều và ATC; kèm room ngoại còn lại và thanh khoản thị trường.",
-    /* embed_options=dark_theme: ép Streamlit luôn dùng theme tối. Bỏ tham số này đi thì app
-       sẽ đổi màu theo cài đặt sáng/tối của máy người xem (không ổn định); đổi thành
-       light_theme nếu muốn nền trắng. */
-    embedUrl: "https://bp-tradingmonitor.streamlit.app/?embed=true&embed_options=dark_theme",
+    /* embed_options=light_theme: ép Streamlit dùng theme sáng, khớp bộ nhận diện mới.
+       BẮT BUỘC phải ép — nếu bỏ tham số này, app đổi màu theo cài đặt sáng/tối của
+       máy người xem và sẽ ra nền đen với người đang để chế độ tối. */
+    embedUrl: "https://bp-tradingmonitor.streamlit.app/?embed=true&embed_options=light_theme",
     sourceUrl: "https://bp-tradingmonitor.streamlit.app",
     cadence: "Nhiều lần mỗi phiên, Thứ 2 – Thứ 6",
     note: "Bảng này chạy trên Streamlit và có thể ngủ khi lâu không ai truy cập — nếu thấy màn hình khởi động, bấm nút trong khung để đánh thức, mất khoảng 30 giây."
