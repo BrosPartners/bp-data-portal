@@ -324,7 +324,7 @@
     var navRight = el("div", "bp-legal-nav-right");
     navRight.appendChild(buildSkinSwitch("legal"));
     var siteLink = el("a", "bp-legal-navlink", "Website công ty");
-    siteLink.href = "http://brospartners.com/?lang=vi";
+    siteLink.href = "http://brospartners.webstarterz.com/?lang=vi";
     navRight.appendChild(siteLink);
     navRight.appendChild(el("span", "bp-user-slot"));
     nav.appendChild(navRight);
@@ -344,7 +344,7 @@
     var ctaPrimary = el("a", "bp-legal-btn bp-legal-btn-primary", "Truy cập các Dashboard");
     ctaPrimary.href = "#bpLegalGrid";
     var ctaSecondary = el("a", "bp-legal-btn bp-legal-btn-ghost", "Về Bros Partners");
-    ctaSecondary.href = "http://brospartners.com/?lang=vi";
+    ctaSecondary.href = "http://brospartners.webstarterz.com/?lang=vi";
     ctaRow.appendChild(ctaPrimary);
     ctaRow.appendChild(ctaSecondary);
     heroInner.appendChild(ctaRow);
