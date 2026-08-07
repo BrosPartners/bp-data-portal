@@ -139,7 +139,6 @@ function loginPageHtml(nextUrl, error) {
   <div class="card">
     <img src="./assets/logo.png" alt="Bros Partners">
     <h1>Cổng dữ liệu Bros Partners</h1>
-    <p>Nội dung nội bộ. Đăng nhập bằng email công ty (@${ALLOWED_DOMAIN}) để tiếp tục.</p>
     <div id="btn"></div>
     ${error ? `<p class="err">${error}</p>` : ""}
   </div>
