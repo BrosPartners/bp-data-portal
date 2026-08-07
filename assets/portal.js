@@ -162,16 +162,6 @@
     if (d && d.cadence) bar.appendChild(el("span", "bp-topbar-cadence", d.cadence));
     bar.appendChild(el("span", "bp-spacer"));
 
-    if (d) {
-      var src = el("a", "bp-ghostbtn", svg("external"));
-      src.href = d.sourceUrl;
-      src.target = "_blank";
-      src.rel = "noopener";
-      src.setAttribute("aria-label", "Mở app gốc ở tab mới");
-      src.appendChild(el("span", null, "Mở app gốc"));
-      bar.appendChild(src);
-    }
-
     // Chỗ để auth.js gắn nút Đăng xuất
     bar.appendChild(el("span", "bp-user-slot"));
     return bar;
