@@ -72,10 +72,6 @@
     var h1 = document.createElement("h1");
     h1.textContent = "Cổng dữ liệu Bros Partners";
 
-    var p = document.createElement("p");
-    p.className = "bp-auth-sub";
-    p.textContent = "Đăng nhập bằng email công ty (@" + ALLOWED_DOMAIN + ") để tiếp tục.";
-
     var btnHost = document.createElement("div");
     btnHost.id = "bp-google-btn";
     btnHost.className = "bp-auth-btn-host";
@@ -88,7 +84,6 @@
 
     card.appendChild(img);
     card.appendChild(h1);
-    card.appendChild(p);
     card.appendChild(btnHost);
     card.appendChild(msg);
     overlay.appendChild(card);
