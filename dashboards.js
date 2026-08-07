@@ -19,10 +19,9 @@ window.BP_DASHBOARDS = [
     /* embed_options=light_theme: ép Streamlit dùng theme sáng, khớp bộ nhận diện mới.
        BẮT BUỘC phải ép — nếu bỏ tham số này, app đổi màu theo cài đặt sáng/tối của
        máy người xem và sẽ ra nền đen với người đang để chế độ tối. */
-    embedUrl: "https://bp-tradingmonitor.streamlit.app/?embed=true&embed_options=light_theme",
-    sourceUrl: "https://bp-tradingmonitor.streamlit.app",
-    cadence: "Nhiều lần mỗi phiên, Thứ 2 – Thứ 6",
-    note: "Bảng này chạy trên Streamlit và có thể ngủ khi lâu không ai truy cập — nếu thấy màn hình khởi động, bấm nút trong khung để đánh thức, mất khoảng 30 giây."
+    embedUrl: "https://data-nn.brospartners.com/?embed=true&embed_options=light_theme",
+    sourceUrl: "https://data-nn.brospartners.com",
+    cadence: "Nhiều lần mỗi phiên, Thứ 2 – Thứ 6"
   },
   {
     id: "vi-mo",
@@ -40,8 +39,8 @@ window.BP_DASHBOARDS = [
     icon: "mappin",
     title: "Bản đồ bất động sản TP.HCM",
     blurb: "Bản đồ và phân tích mặt bằng giá, tỷ suất cho thuê, diễn biến giá theo quý của các dự án căn hộ, kèm lớp hạ tầng metro.",
-    embedUrl: "https://bds-visualize.vercel.app/",
-    sourceUrl: "https://bds-visualize.vercel.app/",
+    embedUrl: "https://data-bds.brospartners.com/",
+    sourceUrl: "https://data-bds.brospartners.com/",
     cadence: "Trực tiếp theo dữ liệu khảo sát"
   },
   {
@@ -53,8 +52,8 @@ window.BP_DASHBOARDS = [
     icon: "research",
     title: "Phân tích ngân hàng & CTCK",
     blurb: "Định giá và hiệu quả kinh doanh của 14 ngân hàng và các công ty chứng khoán: P/B, P/E, ROE, chất lượng tài sản, tiến độ lợi nhuận so với kế hoạch, cổ tức và cơ cấu cổ đông.",
-    embedUrl: "https://bp-banking-dashboard-delta.vercel.app/",
-    sourceUrl: "https://bp-banking-dashboard-delta.vercel.app/",
+    embedUrl: "https://data-nganhang.brospartners.com/",
+    sourceUrl: "https://data-nganhang.brospartners.com/",
     cadence: "Theo kỳ báo cáo tài chính"
   }
 ];
