@@ -245,6 +245,28 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  // ── Tinh nang tinh (logo, css...) duoc phep xem truoc dang nhap — trang
+  //    /login can hien logo, va bi chinh cong nay chan lai se vo dong anh. ──
+  if (req.method === "GET" && pathname.startsWith("/assets/")) {
+    const assetPath = path.normalize(path.join(ROOT, decodeURIComponent(pathname)));
+    if (!assetPath.startsWith(ROOT)) {
+      res.writeHead(403);
+      res.end("Forbidden");
+      return;
+    }
+    fs.readFile(assetPath, (err, data) => {
+      if (err) {
+        res.writeHead(404, { "content-type": "text/plain; charset=utf-8" });
+        res.end("404 Not Found");
+        return;
+      }
+      const ext = path.extname(assetPath);
+      res.writeHead(200, { "content-type": MIME[ext] || "application/octet-stream" });
+      res.end(data);
+    });
+    return;
+  }
+
   // ── Moi thu con lai: bat buoc co cookie phien hop le ─────────────────────
   const cookies = parseCookies(req.headers.cookie);
   if (!verifySession(cookies[COOKIE_NAME], AUTH_SECRET)) {
