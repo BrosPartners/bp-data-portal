@@ -55,5 +55,15 @@ window.BP_DASHBOARDS = [
     embedUrl: "https://data-nganhang.brospartners.com/",
     sourceUrl: "https://data-nganhang.brospartners.com/",
     cadence: "Theo kỳ báo cáo tài chính"
+  },
+  {
+    id: "cang-bien",
+    group: "Cảng biển & Logistics",
+    icon: "ship",
+    title: "Lịch tàu & Sản lượng cảng biển",
+    blurb: "Lịch tàu ra/vào, sản lượng và công suất khai thác của các cảng Hải Phòng và TP.HCM, kèm cơ cấu tuyến quốc tế và số liệu xuất nhập khẩu Việt Nam.",
+    embedUrl: "https://brospartners.github.io/hp-ship-schedule/",
+    sourceUrl: "https://brospartners.github.io/hp-ship-schedule/",
+    cadence: "Hằng ngày"
   }
 ];
