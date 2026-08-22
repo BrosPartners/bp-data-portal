@@ -26,6 +26,84 @@ const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || "526273088846-j356ovgic
 const ALLOWED_DOMAIN = "brospartners.com";
 const SESSION_HOURS = 12;
 
+// ── Chong brute-force dang nhap ───────────────────────────────────────────
+// Caddy reverse_proxy tu 172.18.0.1 (docker bridge) -> server nay; nhung port
+// 3003 CUNG lo ra ngoai internet truc tiep (khong chi qua Caddy), nen KHONG
+// duoc tin header X-Forwarded-For mu quang — chi tin no khi ket noi TCP that
+// su den tu chinh Caddy (remoteAddress = trusted proxy), neu khong dung
+// thang remoteAddress (khong the gia mao o tang TCP).
+const TRUSTED_PROXY_IPS = new Set(["172.18.0.1", "::ffff:172.18.0.1", "127.0.0.1", "::1", "::ffff:127.0.0.1"]);
+const RATE_LIMIT_WINDOW_MS = 60 * 1000;
+const RATE_LIMIT_MAX = 5;      // toi da 5 yeu cau dang nhap / phut / IP
+const MAX_FAILS_BEFORE_LOCK = 10;   // sai qua 10 lan -> khoa VINH VIEN, can admin mo lai
+const SECURITY_PATH = path.join(ROOT, "data", "auth_security.json");
+
+function getClientIp(req) {
+  const socketIp = req.socket.remoteAddress || "";
+  if (TRUSTED_PROXY_IPS.has(socketIp)) {
+    const xff = req.headers["x-forwarded-for"];
+    if (xff) return xff.split(",")[0].trim();
+  }
+  return socketIp;
+}
+
+function loadSecurityDb() {
+  try {
+    const raw = JSON.parse(fs.readFileSync(SECURITY_PATH, "utf8"));
+    return { ip: raw.ip || {}, email: raw.email || {} };
+  } catch {
+    return { ip: {}, email: {} };
+  }
+}
+
+function saveSecurityDb(db) {
+  try {
+    fs.mkdirSync(path.dirname(SECURITY_PATH), { recursive: true });
+    fs.writeFileSync(SECURITY_PATH, JSON.stringify(db, null, 2));
+  } catch (e) {
+    console.error("Khong ghi duoc auth_security.json:", e.message);
+  }
+}
+
+function isLocked(db, kind, key) {
+  const rec = db[kind][key];
+  return !!(rec && rec.locked);
+}
+
+function recordAuthFailure(db, kind, key) {
+  if (!key) return;
+  const rec = db[kind][key] || { fails: 0, locked: false };
+  if (!rec.locked) {
+    rec.fails += 1;
+    if (rec.fails >= MAX_FAILS_BEFORE_LOCK) {
+      rec.locked = true;
+      rec.lockedAt = new Date().toISOString();
+    }
+  }
+  db[kind][key] = rec;
+}
+
+function recordAuthSuccess(db, kind, key) {
+  if (!key) return;
+  const rec = db[kind][key];
+  if (rec && !rec.locked) rec.fails = 0;   // khong reset neu da khoa — khoa la vinh vien
+}
+
+// Rate limit chi can trong bo nho (khong can song song nhieu tien trinh —
+// pm2 chay che do fork, 1 instance duy nhat) — cua so truot don gian theo IP.
+const rateLimitBuckets = new Map();   // ip -> [timestamps]
+
+function isRateLimited(ip) {
+  const now = Date.now();
+  const arr = (rateLimitBuckets.get(ip) || []).filter((t) => now - t < RATE_LIMIT_WINDOW_MS);
+  arr.push(now);
+  rateLimitBuckets.set(ip, arr);
+  return arr.length > RATE_LIMIT_MAX;
+}
+
+const LOCKED_MSG = "Tài khoản/thiết bị này đã bị khoá do đăng nhập sai quá nhiều lần. " +
+  "Liên hệ admin để được cấp lại quyền truy cập.";
+
 const MIME = {
   ".html": "text/html; charset=utf-8",
   ".js": "text/javascript; charset=utf-8",
@@ -117,7 +195,7 @@ function readBody(req) {
   });
 }
 
-function loginPageHtml(nextUrl, error) {
+function loginPageHtml(nextUrl, error, hideButton) {
   const safeNext = nextUrl.replace(/"/g, "&quot;");
   return `<!doctype html>
 <html lang="vi"><head><meta charset="utf-8">
@@ -138,10 +216,10 @@ function loginPageHtml(nextUrl, error) {
 </head><body>
   <div class="card">
     <img src="./assets/logo.png" alt="Bros Partners">
-    <div id="btn"></div>
+    ${hideButton ? "" : '<div id="btn"></div>'}
     ${error ? `<p class="err">${error}</p>` : ""}
   </div>
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  ${hideButton ? "" : `<script src="https://accounts.google.com/gsi/client" async defer></script>
   <script>
     window.onload = function () {
       google.accounts.id.initialize({
@@ -163,11 +241,38 @@ function loginPageHtml(nextUrl, error) {
         theme: "outline", size: "large", text: "signin_with", locale: "vi",
       });
     };
-  </script>
+  </script>`}
 </body></html>`;
 }
 
+// Danh sach domain duoc phep nhung iframe — phai khop dashboards.js (embedUrl).
+const FRAME_SRC = [
+  "https://accounts.google.com",
+  "https://brospartners.github.io",
+  "https://data-nn.brospartners.com",
+  "https://data-bds.brospartners.com",
+  "https://data-nganhang.brospartners.com",
+].join(" ");
+
+const CSP = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-inline' https://accounts.google.com",
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://accounts.google.com",
+  "font-src 'self' https://fonts.gstatic.com",
+  "img-src 'self' data: https://accounts.google.com https://*.googleusercontent.com",
+  `frame-src ${FRAME_SRC}`,
+  "connect-src 'self' https://accounts.google.com",
+  "frame-ancestors 'self'",
+].join("; ");
+
+function setSecurityHeaders(res) {
+  res.setHeader("Content-Security-Policy", CSP);
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+}
+
 const server = http.createServer(async (req, res) => {
+  setSecurityHeaders(res);
   if (!AUTH_SECRET) {
     res.writeHead(503, { "content-type": "text/plain; charset=utf-8" });
     res.end("Máy chủ chưa cấu hình AUTH_SECRET — tạm khoá truy cập.");
@@ -176,18 +281,40 @@ const server = http.createServer(async (req, res) => {
 
   const urlObj = new URL(req.url, "http://placeholder");
   const pathname = urlObj.pathname;
+  const clientIp = getClientIp(req);
 
   // ── Trang login (khong bi chinh no chan lai) ────────────────────────────
   if (req.method === "GET" && pathname === "/login") {
     const next = urlObj.searchParams.get("next") || "/";
-    const error = urlObj.searchParams.get("error") || "";
+    let error = urlObj.searchParams.get("error") || "";
+    if (isRateLimited(clientIp)) {
+      res.writeHead(429, { "content-type": "text/html; charset=utf-8" });
+      res.end(loginPageHtml(next, "Quá nhiều yêu cầu — thử lại sau 1 phút.", true));
+      return;
+    }
+    const db = loadSecurityDb();
+    const locked = isLocked(db, "ip", clientIp);
+    if (locked) error = LOCKED_MSG;
     res.writeHead(200, { "content-type": "text/html; charset=utf-8" });
-    res.end(loginPageHtml(next, error));
+    res.end(loginPageHtml(next, error, locked));
     return;
   }
 
   // ── Nhan credential tu Google, xac minh, ky cookie phien chung ──────────
   if (req.method === "POST" && pathname === "/api/auth/callback") {
+    if (isRateLimited(clientIp)) {
+      res.writeHead(429, { "content-type": "application/json" });
+      res.end(JSON.stringify({ error: "Quá nhiều yêu cầu — thử lại sau 1 phút." }));
+      return;
+    }
+
+    const db = loadSecurityDb();
+    if (isLocked(db, "ip", clientIp)) {
+      res.writeHead(403, { "content-type": "application/json" });
+      res.end(JSON.stringify({ error: LOCKED_MSG }));
+      return;
+    }
+
     let credential, next;
     try {
       const body = JSON.parse(await readBody(req));
@@ -208,8 +335,18 @@ const server = http.createServer(async (req, res) => {
     try {
       info = await verifyGoogleIdToken(credential);
     } catch {
+      recordAuthFailure(db, "ip", clientIp);
+      saveSecurityDb(db);
       res.writeHead(401, { "content-type": "application/json" });
       res.end(JSON.stringify({ error: "Không xác minh được tài khoản Google." }));
+      return;
+    }
+
+    // Email da xac minh chu ky that su tu Google (khong phai nguoi dung tu go) —
+    // dung duoc de khoa rieng theo tai khoan, khong chi theo IP/thiet bi.
+    if (info.email && isLocked(db, "email", info.email)) {
+      res.writeHead(403, { "content-type": "application/json" });
+      res.end(JSON.stringify({ error: LOCKED_MSG }));
       return;
     }
 
@@ -218,10 +355,17 @@ const server = http.createServer(async (req, res) => {
     const domainOk = isAllowedEmail(info.email, info.hd);
 
     if (!audOk || !verified || !domainOk) {
+      recordAuthFailure(db, "ip", clientIp);
+      recordAuthFailure(db, "email", info.email);
+      saveSecurityDb(db);
       res.writeHead(403, { "content-type": "application/json" });
       res.end(JSON.stringify({ error: `Tài khoản ${info.email || ""} không thuộc @${ALLOWED_DOMAIN}.` }));
       return;
     }
+
+    recordAuthSuccess(db, "ip", clientIp);
+    recordAuthSuccess(db, "email", info.email);
+    saveSecurityDb(db);
 
     const exp = Math.floor(Date.now() / 1000) + SESSION_HOURS * 3600;
     const token = signSession({ email: info.email, exp }, AUTH_SECRET);
@@ -248,7 +392,7 @@ const server = http.createServer(async (req, res) => {
   //    /login can hien logo, va bi chinh cong nay chan lai se vo dong anh. ──
   if (req.method === "GET" && pathname.startsWith("/assets/")) {
     const assetPath = path.normalize(path.join(ROOT, decodeURIComponent(pathname)));
-    if (!assetPath.startsWith(ROOT)) {
+    if (assetPath !== ROOT && !assetPath.startsWith(ROOT + path.sep)) {
       res.writeHead(403);
       res.end("Forbidden");
       return;
@@ -281,7 +425,7 @@ const server = http.createServer(async (req, res) => {
   const filePath = path.normalize(path.join(ROOT, reqPath));
 
   // Chan path traversal — file phai nam trong ROOT.
-  if (!filePath.startsWith(ROOT)) {
+  if (filePath !== ROOT && !filePath.startsWith(ROOT + path.sep)) {
     res.writeHead(403);
     res.end("Forbidden");
     return;
