@@ -65,5 +65,15 @@ window.BP_DASHBOARDS = [
     embedUrl: "https://brospartners.github.io/hp-ship-schedule/",
     sourceUrl: "https://brospartners.github.io/hp-ship-schedule/",
     cadence: "Hằng ngày"
+  },
+  {
+    id: "nhap-khau-my",
+    group: "Thị trường",
+    icon: "trending",
+    title: "Nhập khẩu thủy sản vào Mỹ",
+    blurb: "Sản lượng, giá trị và giá bình quân (ASP) hàng thủy sản phi lê đông lạnh nhập vào Mỹ theo tháng — Tilapia, Pangasius, Haddock, Salmon, Cod, Pollock — kèm cơ cấu theo nước xuất khẩu. Nguồn NOAA Fisheries. Chưa bao gồm thuế nhập khẩu.",
+    embedUrl: "https://brospartners.github.io/us-seafood-imports/",
+    sourceUrl: "https://brospartners.github.io/us-seafood-imports/",
+    cadence: "Hằng ngày lúc 05:00"
   }
 ];
