@@ -75,5 +75,15 @@ window.BP_DASHBOARDS = [
     embedUrl: "https://brospartners.github.io/us-seafood-imports/",
     sourceUrl: "https://brospartners.github.io/us-seafood-imports/",
     cadence: "Hằng ngày lúc 05:00"
+  },
+  {
+    id: "xuat-khau-my",
+    group: "Thủy sản",
+    icon: "trending",
+    title: "Xuất khẩu thủy sản của Mỹ",
+    blurb: "Sản lượng, giá trị và giá bình quân (ASP) hàng thủy sản Mỹ xuất khẩu ra thế giới theo tháng — Tôm hùm, Cá Minh Thái Alaska (surimi/phi lê), Cá hồi Sockeye, trứng cá hồi, Cá tuyết, Cua — kèm cơ cấu theo thị trường xuất khẩu. Nguồn NOAA Fisheries.",
+    embedUrl: "https://brospartners.github.io/us-seafood-exports/",
+    sourceUrl: "https://brospartners.github.io/us-seafood-exports/",
+    cadence: "Hằng ngày lúc 05:00"
   }
 ];
