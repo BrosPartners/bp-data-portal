@@ -67,21 +67,55 @@ window.BP_DASHBOARDS = [
     cadence: "Hằng ngày"
   },
   {
+    id: "thuy-san-my",
+    group: "Thủy sản",
+    icon: "trending",
+    title: "Thương mại thủy sản của Mỹ",
+    blurb: "Sản lượng, giá trị và giá bình quân (ASP) hàng thủy sản Mỹ nhập khẩu và xuất khẩu theo tháng, kèm cơ cấu theo nước đối tác. Nguồn NOAA Fisheries. Bấm nút Nhập khẩu / Xuất khẩu ở trên để chuyển chiều.",
+    /* Dashboard gộp — 2 nguồn độc lập (mỗi bên có pipeline crawl/build/test
+       riêng, KHÔNG đụng vào khi sửa cái này), portal.js chỉ chuyển iframe
+       theo lựa chọn của người xem. Xem assets/portal.js: buildVariantSwitch. */
+    variants: [
+      {
+        key: "nhap",
+        label: "Nhập khẩu",
+        title: "Nhập khẩu thủy sản vào Mỹ",
+        embedUrl: "https://brospartners.github.io/us-seafood-imports/",
+        sourceUrl: "https://brospartners.github.io/us-seafood-imports/"
+      },
+      {
+        key: "xuat",
+        label: "Xuất khẩu",
+        title: "Xuất khẩu thủy sản của Mỹ",
+        embedUrl: "https://brospartners.github.io/us-seafood-exports/",
+        sourceUrl: "https://brospartners.github.io/us-seafood-exports/"
+      }
+    ],
+    sourceUrl: "https://brospartners.github.io/us-seafood-imports/",
+    cadence: "Hằng ngày lúc 05:00"
+  },
+  /* Giữ 2 id cũ ở dạng ẩn (không hiện sidebar/trang chủ) để link cũ đã
+     chia sẻ/bookmark (nhap-khau-my.html, xuat-khau-my.html) vẫn mở được y
+     như trước khi gộp — mỗi trang vẫn hiện 1 dashboard đơn, không có nút
+     chuyển. Trang chủ/sidebar chỉ còn dẫn tới thuy-san-my.html ở trên. */
+  {
     id: "nhap-khau-my",
+    hidden: true,
     group: "Thủy sản",
     icon: "trending",
     title: "Nhập khẩu thủy sản vào Mỹ",
-    blurb: "Sản lượng, giá trị và giá bình quân (ASP) hàng thủy sản phi lê đông lạnh nhập vào Mỹ theo tháng — Tilapia, Pangasius, Haddock, Salmon, Cod, Pollock — kèm cơ cấu theo nước xuất khẩu. Nguồn NOAA Fisheries. Chưa bao gồm thuế nhập khẩu.",
+    blurb: "",
     embedUrl: "https://brospartners.github.io/us-seafood-imports/",
     sourceUrl: "https://brospartners.github.io/us-seafood-imports/",
     cadence: "Hằng ngày lúc 05:00"
   },
   {
     id: "xuat-khau-my",
+    hidden: true,
     group: "Thủy sản",
     icon: "trending",
     title: "Xuất khẩu thủy sản của Mỹ",
-    blurb: "Sản lượng, giá trị và giá bình quân (ASP) hàng thủy sản Mỹ xuất khẩu ra thế giới theo tháng — Tôm hùm, Cá Minh Thái Alaska (surimi/phi lê), Cá hồi Sockeye, trứng cá hồi, Cá tuyết, Cua — kèm cơ cấu theo thị trường xuất khẩu. Nguồn NOAA Fisheries.",
+    blurb: "",
     embedUrl: "https://brospartners.github.io/us-seafood-exports/",
     sourceUrl: "https://brospartners.github.io/us-seafood-exports/",
     cadence: "Hằng ngày lúc 05:00"

@@ -396,6 +396,17 @@ body.bp-collapsed .bp-sidebar-foot { flex-direction: column; }
 .bp-frame-wrap { position: absolute; inset: 0; }
 .bp-frame-wrap iframe { display: block; width: 100%; height: 100%; border: 0; }
 
+/* Dashboard gộp nhiều nguồn (vd Nhập khẩu / Xuất khẩu): thanh chuyển biến
+   thể nằm trên, khung iframe chiếm phần còn lại — không dùng inset:0 nữa
+   vì phải chừa chỗ cho thanh chuyển phía trên. */
+.bp-embed-area { position: absolute; inset: 0; display: flex; flex-direction: column; }
+.bp-variant-row {
+  flex: 0 0 auto; padding: 10px 18px;
+  border-bottom: 1px solid var(--border-hairline);
+  background: var(--bg-surface);
+}
+.bp-frame-wrap--flex { position: relative; flex: 1 1 auto; min-height: 0; }
+
 .bp-note {
   padding: 9px 18px;
   background: var(--accent-soft);

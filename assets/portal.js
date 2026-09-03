@@ -383,25 +383,18 @@
   }
 
   /* ---------- Trang nhúng ---------- */
-  function mountEmbed() {
-    var id = document.body.getAttribute("data-dashboard");
-    var d = findDashboard(id);
-    if (!d) { window.location.replace("./index.html"); return; }
-
-    document.title = d.title + " — Bros Partners";
-    var parts = buildShell(d.id, d.title, d);
-
-    if (d.note) {
-      var note = el("div", "bp-note", "");
-      note.textContent = d.note;
-      parts.main.insertBefore(note, parts.content);
-    }
-
-    var wrap = el("div", "bp-frame-wrap");
+  /**
+   * Nạp 1 iframe vào `wrap` (đã có sẵn trong DOM), thay cho iframe cũ nếu có.
+   * Dùng chung cho dashboard đơn (1 embedUrl) và dashboard nhiều biến thể
+   * (variants) — mỗi lần chuyển biến thể gọi lại hàm này với entry tương ứng.
+   * `entry` chỉ cần {title, embedUrl, sourceUrl}.
+   */
+  function mountFrame(wrap, entry) {
+    wrap.innerHTML = "";
 
     var frame = document.createElement("iframe");
-    frame.src = d.embedUrl;
-    frame.title = d.title;
+    frame.src = entry.embedUrl;
+    frame.title = entry.title;
     frame.setAttribute("allow", "fullscreen");
 
     var overlay = el("div", "bp-overlay");
@@ -413,7 +406,7 @@
     var msg = el("div", "bp-msg");
     msg.setAttribute("role", "status");
     msg.setAttribute("aria-live", "polite");
-    msg.textContent = "Đang tải " + d.title + "…";
+    msg.textContent = "Đang tải " + entry.title + "…";
     overlay.appendChild(overlayLogo);
     overlay.appendChild(spinner);
     overlay.appendChild(msg);
@@ -426,7 +419,7 @@
         "Bảng theo dõi mất nhiều thời gian hơn thường lệ để khởi động. " +
         "Ứng dụng có thể đang được đánh thức sau thời gian không sử dụng — vui lòng chờ thêm hoặc mở ở tab mới.";
       var btn = el("a", "bp-btn");
-      btn.href = d.sourceUrl;
+      btn.href = entry.sourceUrl;
       btn.target = "_blank";
       btn.rel = "noopener";
       btn.textContent = "Mở ở tab mới";
@@ -441,7 +434,82 @@
 
     wrap.appendChild(frame);
     wrap.appendChild(overlay);
-    parts.content.appendChild(wrap);
+  }
+
+  /**
+   * Segmented control chuyển biến thể cho dashboard gộp nhiều nguồn (vd
+   * Nhập khẩu / Xuất khẩu thủy sản). d.variants: [{key, label, embedUrl,
+   * sourceUrl}, ...]. Chọn theo query string ?v=<key> nếu khớp, mặc định
+   * biến thể đầu tiên. Đổi biến thể chỉ nạp lại iframe, không dựng lại
+   * khung trang — và cập nhật URL (replaceState) để giữ được deep link.
+   */
+  function buildVariantSwitch(d, wrap) {
+    var params = new URLSearchParams(window.location.search);
+    var wanted = params.get("v");
+    var startIndex = 0;
+    for (var i = 0; i < d.variants.length; i++) {
+      if (d.variants[i].key === wanted) { startIndex = i; break; }
+    }
+
+    var nav = el("div", "bp-skin-switch bp-variant-switch");
+    nav.setAttribute("role", "group");
+    nav.setAttribute("aria-label", "Chọn nguồn dữ liệu");
+
+    function activate(index) {
+      var entry = d.variants[index];
+      Array.prototype.forEach.call(nav.children, function (btn, i) {
+        var active = i === index;
+        btn.classList.toggle("is-active", active);
+        if (active) btn.setAttribute("aria-pressed", "true");
+        else btn.removeAttribute("aria-pressed");
+      });
+      mountFrame(wrap, entry);
+      var url = new URL(window.location.href);
+      url.searchParams.set("v", entry.key);
+      window.history.replaceState(null, "", url);
+    }
+
+    d.variants.forEach(function (variant, index) {
+      var b = el("button", "bp-skin-opt", variant.label);
+      b.type = "button";
+      b.addEventListener("click", function () {
+        if (nav.children[index].classList.contains("is-active")) return;
+        activate(index);
+      });
+      nav.appendChild(b);
+    });
+
+    activate(startIndex);
+    return nav;
+  }
+
+  function mountEmbed() {
+    var id = document.body.getAttribute("data-dashboard");
+    var d = findDashboard(id);
+    if (!d) { window.location.replace("./index.html"); return; }
+
+    document.title = d.title + " — Bros Partners";
+    var parts = buildShell(d.id, d.title, d);
+
+    if (d.note) {
+      var note = el("div", "bp-note", "");
+      note.textContent = d.note;
+      parts.main.insertBefore(note, parts.content);
+    }
+
+    if (d.variants && d.variants.length) {
+      var area = el("div", "bp-embed-area");
+      var wrap = el("div", "bp-frame-wrap bp-frame-wrap--flex");
+      var switchRow = el("div", "bp-variant-row");
+      switchRow.appendChild(buildVariantSwitch(d, wrap));
+      area.appendChild(switchRow);
+      area.appendChild(wrap);
+      parts.content.appendChild(area);
+    } else {
+      var wrap = el("div", "bp-frame-wrap");
+      mountFrame(wrap, d);
+      parts.content.appendChild(wrap);
+    }
   }
 
   // Gỡ màn hình chờ (logo + spinner) hiện sẵn trong HTML tĩnh — gọi sau khi
