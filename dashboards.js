@@ -34,6 +34,17 @@ window.BP_DASHBOARDS = [
     cadence: "Hằng ngày lúc 17:00"
   },
   {
+    id: "vn30",
+    group: "Thị trường",
+    icon: "trending",
+    title: "Ứng viên vào rổ VN30",
+    blurb: "Dự báo cổ phiếu được thêm vào hoặc bị loại khỏi rổ VN30 tại kỳ review kế tiếp (01/2027), tính theo Bộ quy tắc HOSE-Index phiên bản 4.0: vốn hóa bình quân 12 tháng, free float, thanh khoản khớp lệnh và lợi nhuận sau thuế.",
+    embedUrl: "https://brospartners.github.io/vn30-tracker/",
+    sourceUrl: "https://brospartners.github.io/vn30-tracker/",
+    cadence: "Hằng ngày lúc 17:00, Thứ 2 – Thứ 6",
+    note: "Ước tính của Bros Partners theo quy tắc công bố của HOSE, không phải công bố chính thức của Sở."
+  },
+  {
     id: "bat-dong-san",
     group: "Bất động sản",
     icon: "mappin",
