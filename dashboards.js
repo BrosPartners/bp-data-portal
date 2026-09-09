@@ -37,7 +37,7 @@ window.BP_DASHBOARDS = [
     id: "vn30",
     group: "Thị trường",
     icon: "trending",
-    title: "Ứng viên vào rổ VN30",
+    title: "Tracking VN30",
     blurb: "Dự báo cổ phiếu được thêm vào hoặc bị loại khỏi rổ VN30 tại kỳ review kế tiếp (01/2027), tính theo Bộ quy tắc HOSE-Index phiên bản 4.0: vốn hóa bình quân 12 tháng, free float, thanh khoản khớp lệnh và lợi nhuận sau thuế.",
     embedUrl: "https://brospartners.github.io/vn30-tracker/",
     sourceUrl: "https://brospartners.github.io/vn30-tracker/",
