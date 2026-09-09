@@ -27,7 +27,7 @@ window.BP_DASHBOARDS = [
     id: "vi-mo",
     group: "Thị trường",
     icon: "landmark",
-    title: "Vĩ mô & Ngân hàng",
+    title: "Vĩ mô & tiền tệ",
     blurb: "Lãi suất huy động của các ngân hàng lớn, lãi suất liên ngân hàng và điều hành của SBV, tỷ giá, giá vàng, lợi suất trái phiếu và các chỉ tiêu vĩ mô.",
     embedUrl: "https://brospartners.github.io/liquidity-crawler/",
     sourceUrl: "https://brospartners.github.io/liquidity-crawler/",
