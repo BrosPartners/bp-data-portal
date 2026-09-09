@@ -14,7 +14,7 @@ window.BP_DASHBOARDS = [
     id: "chung-khoan",
     group: "Thị trường",
     icon: "trending",
-    title: "Giao dịch nhà đầu tư nước ngoài",
+    title: "Tracking giao dịch cổ phiếu",
     blurb: "Theo dõi mua/bán ròng của khối ngoại trên 17 mã cổ phiếu, chia theo phiên sáng, phiên chiều và ATC; kèm room ngoại còn lại và thanh khoản thị trường.",
     /* embed_options=light_theme: ép Streamlit dùng theme sáng, khớp bộ nhận diện mới.
        BẮT BUỘC phải ép — nếu bỏ tham số này, app đổi màu theo cài đặt sáng/tối của
