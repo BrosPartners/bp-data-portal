@@ -34,7 +34,14 @@ const SESSION_HOURS = 12;
 // thang remoteAddress (khong the gia mao o tang TCP).
 const TRUSTED_PROXY_IPS = new Set(["172.18.0.1", "::ffff:172.18.0.1", "127.0.0.1", "::1", "::ffff:127.0.0.1"]);
 const RATE_LIMIT_WINDOW_MS = 60 * 1000;
-const RATE_LIMIT_MAX = 5;      // toi da 5 yeu cau dang nhap / phut / IP
+// Truoc day 1 gioi han duy nhat (5/phut) ap dung cho CA luot xem trang /login
+// LAN luot bam dang nhap that (POST callback) — nhung /login bi portal redirect
+// toi rat nhieu lan binh thuong (nhieu dashboard nhung iframe, nhieu tab, cookie
+// het han) nen nguoi dung THAT cung dinh gioi han oan, khong phai bi tan cong.
+// Tach rieng: xem trang thi rong rai (khong ai loi dung duoc gi tu viec xem
+// HTML tinh), chi luot BAM DANG NHAP THAT moi can chan brute-force.
+const RATE_LIMIT_PAGE_MAX = 60;    // xem trang /login — rong, chi chan vong lap loi
+const RATE_LIMIT_ATTEMPT_MAX = 20; // bam dang nhap that (POST callback) / phut / IP
 const MAX_FAILS_BEFORE_LOCK = 10;   // sai qua 10 lan -> khoa VINH VIEN, can admin mo lai
 const SECURITY_PATH = path.join(ROOT, "data", "auth_security.json");
 
@@ -91,14 +98,24 @@ function recordAuthSuccess(db, kind, key) {
 
 // Rate limit chi can trong bo nho (khong can song song nhieu tien trinh —
 // pm2 chay che do fork, 1 instance duy nhat) — cua so truot don gian theo IP.
-const rateLimitBuckets = new Map();   // ip -> [timestamps]
+// 2 bucket RIENG cho 2 muc dich khac nhau (xem lich su bug o tren).
+const pageViewBuckets = new Map();     // ip -> [timestamps] — GET /login
+const authAttemptBuckets = new Map();  // ip -> [timestamps] — POST callback that
 
-function isRateLimited(ip) {
+function _slide(map, ip, windowMs, max) {
   const now = Date.now();
-  const arr = (rateLimitBuckets.get(ip) || []).filter((t) => now - t < RATE_LIMIT_WINDOW_MS);
+  const arr = (map.get(ip) || []).filter((t) => now - t < windowMs);
   arr.push(now);
-  rateLimitBuckets.set(ip, arr);
-  return arr.length > RATE_LIMIT_MAX;
+  map.set(ip, arr);
+  return arr.length > max;
+}
+
+function isPageViewRateLimited(ip) {
+  return _slide(pageViewBuckets, ip, RATE_LIMIT_WINDOW_MS, RATE_LIMIT_PAGE_MAX);
+}
+
+function isAuthAttemptRateLimited(ip) {
+  return _slide(authAttemptBuckets, ip, RATE_LIMIT_WINDOW_MS, RATE_LIMIT_ATTEMPT_MAX);
 }
 
 const LOCKED_MSG = "Tài khoản/thiết bị này đã bị khoá do đăng nhập sai quá nhiều lần. " +
@@ -287,7 +304,7 @@ const server = http.createServer(async (req, res) => {
   if (req.method === "GET" && pathname === "/login") {
     const next = urlObj.searchParams.get("next") || "/";
     let error = urlObj.searchParams.get("error") || "";
-    if (isRateLimited(clientIp)) {
+    if (isPageViewRateLimited(clientIp)) {
       res.writeHead(429, { "content-type": "text/html; charset=utf-8" });
       res.end(loginPageHtml(next, "Quá nhiều yêu cầu — thử lại sau 1 phút.", true));
       return;
@@ -302,7 +319,7 @@ const server = http.createServer(async (req, res) => {
 
   // ── Nhan credential tu Google, xac minh, ky cookie phien chung ──────────
   if (req.method === "POST" && pathname === "/api/auth/callback") {
-    if (isRateLimited(clientIp)) {
+    if (isAuthAttemptRateLimited(clientIp)) {
       res.writeHead(429, { "content-type": "application/json" });
       res.end(JSON.stringify({ error: "Quá nhiều yêu cầu — thử lại sau 1 phút." }));
       return;
